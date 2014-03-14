@@ -1,0 +1,470 @@
+ษออออออออออออออออป
+บ MIKMOD History บ
+ศออออออออออออออออผ
+
+Date last modified: October 21, 1995
+		         
+                         
+Version 2.09 Beta
+
+     -  MikMod is back to polling mode -> no need to call MD_Update() at
+        the exact speed of a song.. just call it once per frame or so.
+
+     -  Made one BIG include file mikmod.h
+                   
+     -  New drivers for: AWE-32 (not included in the release version), Win95
+        Linux voxware, file-output.
+     
+     -  Portable module loaders
+     
+     -  New 32 bits software mixing routine, capable of doing bidi loops & 
+        interpolated mixing.
+
+     -  Made project & makefiles for DOS (borland C, Watcom), Win95 
+        (Borland C 4.5), Linux
+        
+               	   	 	
+Version 2.04 (unreleased)
+
+     -  Added a reppos (restart position) field to the UNI definition
+	so XMs loop correctly if they use a restart position other than 0.
+
+     -  Fixed the XM loader.. it doesn't crash anymore on modules like
+	TOM-MID1.XM etc. 
+
+     -  Implemented _mm_setiobase() function (see MMIO.C) for reading 
+	modules from a certain file offset.. (for your .WAD files or 
+	whatever)
+
+     -  Fixed gusdriver bug which sometimes caused wierd sounds when playing
+	16 bit samples
+     
+     -  Fixed GUS allocation routines so now it can load 8 bit samples 
+	bigger than 256k in size.
+
+
+Version 2.03  
+
+     -  Virtual timer routines: multiple timers using only one hardware
+	timer, with retrace synchronisation option.
+     
+     -  Works with 'pmodew' AND 'DOS4GW' extenders.
+     
+     -  Fast assembly mixing routine for protected mode.
+
+     -  Now also amplified 16 bit mixing for SB-16 (protected mode only)
+     
+     -  Totally rewritten gus driver.. it's fast and small.
+
+     -  Fixed ancient >64k sample bug of the .MOD loader.
+
+     -  Fixed borland interrupt bug (it doesn't save the 32 bit registers
+	during interrupts).
+	
+     -  Fixed watcom interrupt bug (see WATIRQ.DOC)
+	
+     -  Included ALL makefiles, for both borland and watcom (*.bc *.wc)
+
+     -  Made some minor changes to mikcvt.c and mikdesc.c so they compile
+	with watcom.
+
+
+Version 2.02
+
+     -  The /V switch now also effects SB volume. (the internal volume 
+	variable is called mp_volume, instead of md_mainvol) 
+
+     -  Also protected mode SB support (it's slow tho, the mixing routines
+	are 100% C)
+     
+     -  Made a bonus utility 'mikdesc' which adds 4dos descriptions to your
+	modfiles.
+
+     -  Fixed mikcvt bug
+     
+     -  Fixed S3M channel detection & panning (at last)
+     
+     -  Timer interrupt calls system timer at the correct rate
+     
+     -  Fixed multisample bug (XMLOAD.C).. bug appeared at NEVER.XM
+
+     -  Implemented all XM volume row effects
+
+     -  Bumped UNI format version to UN04
+
+     -  Now supports XM periods and finetuning , logarithmic and linear
+     
+     -  Fixed sources & created makefiles to compile mikmod using watcom
+
+     -  Using central timer interrupt (in MDRIVER.C) for updating (this makes
+	syncing the player to the screen a bit easier).. so this is bye-bye
+	to gustimer 1
+
+     -  Updated docs to reflect the changes in MDRIVER.C & MWAV.C
+
+
+Version 2.01 (unreleased)
+
+     -  MD_SampleLoad() & MD_SampleUnload() prototypes have changed
+
+     -  Renamed some types (like 'SAMPLEINFO' to 'SAMPLE')
+
+     -  Multisample instruments
+
+     -  Implemented XM panning & envelope support
+
+     -  Improved XM effects support
+
+
+Version 2.00 (1st public release since 1.00?)
+
+     -  Using synchronous interrupt for soundblaster playing.
+
+     -  Made wavload routines & demo program
+     
+     -  Made a new MIKCVT for converting mods into .UNI modules
+     
+     -  Docs for MLOADER, MDRIVER, MWAV & MPLAYER modules.
+     
+     -  Created a nosound device.. might be useful.
+     
+     
+Version 1.94
+
+     -  Wheee.. I fixed SB-16 support (how did I do this? Well.. I 
+	traded my sb-pro for a sb-16)
+	
+     -  No more autodetecting routines.. the drivers only check the
+	corresponding environment variables for gus & sb.
+
+
+Version 1.93
+
+     -  Changed source directory structure
+
+     -  I managed to compile MikMod with WC 10.. MikMod32 !!
+
+     -  Radically changed the GUS driver preemtive ramping: it no longer 
+	has to use the second gus timer (it uses the volume ramp 
+	interrupt instead). I believe it even sounds better than the old 
+	version.
+   
+     -  Instead of letting the sounddrivers do the playing of voices, I 
+	just added some new routines to the driverstructure:
+    
+	    - VoiceSetVolume
+	    - VoiceSetFrequency
+	    - VoiceSetPanning
+	    - VoicePlay
+    
+	So now the starting of voices and updating of voiceparameters is 
+	back where it belongs: MODPLAY.C
+    
+     -  Fixed small STM tempo bug (Thanks outbit).
+
+
+Version 1.92? (irc testrelease)
+
+     -  Introduced a general sample-converter, so that device drivers 
+	can request the type of sample they want to receive (signed / 
+	unsigned / 16 / 8bits). The sample converter takes care of 
+	transforming _any_ kind of input stream into the required output 
+	stream. This greatly reduces the complexity of the sample-load 
+	routines of the devicedrivers.
+
+     -  XM support.. sorta..
+
+     -  Tried to fix SB-16 support but no luck.. it produced no sound.
+
+
+Version 1.91
+
+
+     -  Using MyGlob() to expand wildcards on the commandline, instead 
+	of the old GetFirstName() etc..
+ 
+ 
+     -  Using standard sys-v style getopts() to improve QNX / Watcom 
+	compatibility.
+
+     -  Added switches to dump all registered devicedrivers or loaders       
+	(/ld /ll).
+
+     -  Added Rao's and Air Richter's STM loader.
+
+
+Version 1.90 Beta
+
+	internal Hardcode & No-Limits & friends test release. Rahh.. I 
+	need a SB-16 so I can finish the SB driver!!
+
+     -  Modules can be made to loop or to stop when they are done 
+	playing, using the new MP_Loop() and MP_Ready() functions (use 
+	the /R switch). Thanks to brianc@qnx.com who reminded me to make 
+	such a function.
+
+     -  Using a object-oriented device-structure for building new 
+	drivers (MDRIVER.C & MDRIVER.H).
+
+     -  Using a object-oriented loader-structure for managing all module 
+	loaders (MLOADER.C & MLOADER.H), so I don't have to mess around 
+	in the MLOADER.C source anymore to add new loaders. All .H files 
+	belonging to the module-loaders have been imported into 
+	the loader sources.
+
+     -  Created speaker device.
+
+     -  Created SB device. (no 16-bits yet tho)
+
+     -  Created GUS device.
+
+     -  Added automatic 20% per-channel amplification for 8-bit mixing, 
+	so multichannel mods don't sound so quiet. Otto Chrons calls it 
+	'autogain'.
+
+     -  EMS support.
+
+     -  Added a /M switch to force mono-output on SB.
+
+     -  Using a new error handling system.. but it's still 
+	experimental.. instead of using error-codes, the routines now 
+	use error-strings:
+
+	old style:      mp_err=102;       // some dumb number                       
+			return 0;
+
+	new style:      myerr="Out of memory";        // Heh :)                       
+			return 0;
+
+	I did this so I can make new errormessages on-the-fly, without 
+	having to define new errorcodes (and recompile everything).
+
+
+Version 1.02 Beta
+
+     -  Added a comment field to the UN01 format. (For MTM ULT & 
+	FAR mods)
+
+     -  15-instrument modules have the reppos as a byte-offset, 
+	NOT words.. fixed (thanks Rao, I didn't have any 15 inst. mods 
+	with sampleloops.)
+
+     -  All S3M effects are supported: I added the following effects: 
+	Xxx, Sxy, Qxy, Kxy, Lxy, Ixy. Effects I and Q are new 
+	uniformat(tm) opcodes, so I bumped the uniformat(tm) version-id 
+	to UN01.
+
+     -  Instead of pattern break positions, the UN01 format now saves 
+	the number of rows in a pattern as an array of words.
+
+     -  Added DSM support (except delta-samples.. I didn't have 
+	any examples.. are they zero based, pelusa ?)
+
+     -  Added MED support.. for all you amigoids outthere. (not 
+	to mention Red Penguin =).. well it's not perfect but I'll fix 
+	that.
+
+     -  Fixed DSM & S3M order (positions) loading.. the bug caused some 
+	S3M's to be played too short.
+
+     -  Fixed S3M number of channels detection.
+
+
+Version 1.01 Beta
+
+     -  Fixed MTM loader.. used to play everything 1 note too low.
+
+     -  Added ultratracker 1.6 loader. 
+     
+     
+Version 1.00 Beta
+
+     -  Preemptive ramping.. nuked the RegisterPlayer()
+     
+     -  .MOD .MTM .S3M .ULT .FAR .669 .UNI support
+
+     -  Using a new 'stream-ish' format for the tracks
+
+     -  Grouped the different sources of mikmod in seperate directories.
+     
+     -  Renamed the MODFILE struct to UNIMOD
+
+     -  Added a converter to convert .MOD .MTM .S3M .ULT .FAR .669 
+	to .UNI.. The track compression of the UNIMOD format saves a lot 
+	of space..
+
+     -  No more fixed size song- and samplenames..
+
+     -  DMP and MTM stereo panning effects supported
+
+     -  Instead of passing the UNIMOD struct as a pointer to each loader 
+	I now use a static UNIMOD struct that each loader can use.
+
+     -  Started using the S3M method of getting the period for a certain 
+	note. ( together with the S3M finetune method )
+
+     -  Implemented variable length patterns.. (669 and FAR style)
+
+     -  Implemented MTM style patterns (sorta)
+
+     -  I discovered a bug in UltraDownload.. it crashes with small DMA 
+	transfers (<8 bytes).. I fixed this by forcing each transfer to 
+	a minimum of 8 bytes.
+
+     -  Fixed a bug in the MTM loader.. samples only loop when the 
+	difference between reppos and repend is bigger than 2 bytes.
+
+     -  S3M note value 254 means note-off.
+
+     -  Fixed left-right stereo positions for MOD-playing.. thanks to 
+	Rao :) No more plug-switching!
+
+
+Version 0.44: (unreleased)
+
+     -  Moved modplay tables to a seperate file 'tables.c'
+
+     -  MikMod now plays 'backwards' mods too
+
+     -  When the data of effect 9 is zero, then you have to use 
+	the previous sampleoffset.. fixed (thanks Stuart)
+
+     -  Fixed the patterndelay effect (see 0.4 rev. below)
+
+     -  Using default amiga channel positions as default (left, right, 
+	right, left)
+
+
+Version 0.43
+
+     -  Fixed a bug that caused the first sample not to be unloaded
+
+     -  Added a check to see if the loop end point exceeds the sample 
+	size (some modfiles seem to have this problem)
+
+     -  Added wildcard filename matching to the modplayer
+
+     -  Added the M!K! module id.
+
+     -  Removed the check for the number of bytes loaded from a sample, 
+	because a lot of modules don't have the last sample complete, so 
+	mikmod would refuse to play them.
+
+     -  Changed the loader so it can load 15-instrument modules
+
+     -  Extended protracker speeds can be disabled
+
+     -  Improved commandline parsing
+
+     -  Added master volume
+
+     -  Added functions to skip to the next or previous song position
+
+
+Version 0.42
+
+     -  Removed more ultraclicks by adding volumeramping when stopping a 
+	voice. Actually this idea was suggested to me by Forte Tech 
+	Support.. thanks!
+
+     -  When an arpeggio effect stopped, the period would 'hang' at the 
+	last arpeggio note, while it should return to the 'base' period.
+	To fix this problem I changed the arpeggio code to not affect 
+	tmpperiod but period itself. (This bug was kinda hard to find 
+	because it's an outdated effect)
+
+     -  Have to limit patbrk values to max. 64.
+
+     -  Rearranged the GusPlay() callback routine to use a more sensible 
+	order of setting the frequency and volume of a voice.
+
+
+Version 0.41
+
+     -  When comparing to my amiga, I noticed that some effects on 
+	mikmod were too fast. I discovered that effects like toneslide, 
+	vibrato, volumeslide etc aren't updated the first tick of a row. 
+	FIXED.
+
+     -  Have to reset wantedperiod for each note..
+
+
+Version 0.4:
+
+     -  Totally rewritten the modload routines.. Created a type 
+	'MODFILE' that holds all info of a modfile, so now you can load
+	more than one module.
+
+     -  New docs.
+
+     -  Using handle-numbers instead of sample numbers to load samples..
+	(neccessary when loading more than one module at a time )
+
+     -  Have to limit volume range for effect C
+
+     -  Fixed effect '3' (toneslide) (this caused wierd slides on
+	modules like scramble.mod)
+
+     -  Switched to a 3-byte-per-note format when converting patterns..
+	same format that GUSMOD uses.
+
+     -  When a patternbreak has just occurred, all patternbreak 
+	command's have to be ignored for the next row. ( This bug 
+	made mikmod skip a pattern in the module 'condom-corruption')
+
+	0.44 addendum: This is _not_ true.. the condom-corruption bug
+	was caused by the patterndelay effect which was implemented
+	incorrectly.
+
+
+Version 0.3: (unreleased)
+
+     -  Added 2 octaves to period tables.
+
+     -  Removed ASM bits from MODLOAD.C
+
+     -  Implemented the remaining effect commands. (Phew!)
+
+     -  The sample start bug of the SDK 2.01 has been removed in the 
+	2.10 SDK. So now this program can be compiled without modifying 
+	the SDK itself.
+
+     -  The pattern break effect data is in BCD !. This screwed 
+	up modules like garbage_collection (by Peter Salomonson).
+
+
+
+Version 0.2:
+
+
+MODLOAD.C:
+
+     -  I have to check ALL song positions (128 positions ) for 
+	patterns.. This bug caused edited modules to load incorrectly. 
+	FIXED.
+
+
+MODPLAY.C:
+
+     -  The old version didn't allow sample loops smaller than 64 bytes. 
+	( that was a leftover from my soundblaster player.. ) FIXED.
+
+
+MIKMOD.C:
+
+     -  UltraClicks removed (most of them). Ultraclicks are caused by
+	the fact that a GUS plays beyond the last byte of a sample. 
+	(actually, it interpolates between the last byte of a sample and 
+	the next byte that doesn't belong to that sample). I fixed this 
+	by allocating one more byte when loading a sample and zeroing 
+	that extra byte.
+
+     -  Added fast volume ramping when starting a sample...
+
+     -  #@$%@^$!!#$@! Fixed the extended speed.. I really should be more 
+	careful.
+
+
+Version 0.1 
+
+First public release.

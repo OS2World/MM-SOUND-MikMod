@@ -1,0 +1,200 @@
+ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+ณMLOADER.C Module Documentationณ
+ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+Date last modified: October 20, 1995
+
+MLOADER.C uses 2 routines of the MDRIVER.C module (MD_SampleLoad() & 
+MD_SampleUnLoad()) so if you want to use MLOADER without using MDRIVER you'll 
+have to define those two routines yourself. (see MIKCVT.C as an example on 
+how to do that).
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+General information:
+
+When you're making a modplayer that has to support several different formats
+the best thing to do is to create your own internal module-format. In 
+MikMod's case this is the 'UNI' format. The loader module takes care of
+loading any of the known module formats and converting it into a UNI format.
+                                          
+            ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤยฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+            ณLOADER BLACKBOXณ                             ณ
+            รฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู                             ณ
+            ณ    ฺฤฤฤฤฤฤฤฤฤฤฟ                             ณ
+            ณ ฺฤฤดmod loaderรฤฤฟ                          ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ                          ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ รฤฤดult loaderรฤฤด                          ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ                          ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ ษออดs3m loaderรออป <- appropriate loader    ณ
+            ณ บ  ภฤฤฤฤฤฤฤฤฤฤู  บ    for this file         ณ
+            ณ บ  ฺฤฤฤฤฤฤฤฤฤฤฟ  บ                          ณ
+            ณ บฤฤดuni loaderรฤฤบ                          ณ
+            ณ บ  ภฤฤฤฤฤฤฤฤฤฤู  บ                          ณ
+            ณ บ  ฺฤฤฤฤฤฤฤฤฤฤฟ  บ                          ณ
+            ณ บฤฤดmtm loaderรฤฤบ                          ณ
+            ณ บ  ภฤฤฤฤฤฤฤฤฤฤู  บ                          ณ
+            ณ บ  ฺฤฤฤฤฤฤฤฤฤฤฟ  บ  ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ ณ
+ modfile >ออออผฤฤดmed loaderรฤฤศออดLOADER GLUE FUNCTIONSรฤลฤฤ>>ฤ unimod *
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ  ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ รฤฤดxm  loaderรฤฤด                          ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ                          ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ รฤฤด669 loaderรฤฤด    - common loader       ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ      routines            ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ รฤฤดfar loaderรฤฤด    - common loader       ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ      variables           ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ รฤฤดdsm loaderรฤฤด                          ณ
+            ณ ณ  ภฤฤฤฤฤฤฤฤฤฤู  ณ                          ณ
+            ณ ณ  ฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                          ณ
+            ณ ภฤฤด... loaderรฤฤู                          ณ
+            ณ    ภฤฤฤฤฤฤฤฤฤฤู                             ณ
+            ณ                                             ณ
+            ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+            
+To prevent having to link _all_ loaders to the loader module when you only 
+wanted to use the uni-loader, for example), the first thing the main module 
+has to do before using the loader module is to 'register' all loaders it 
+might need. This way only the registered drivers will get linked to the 
+executable.
+    
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void ML_RegisterLoader(LOADER *ldr)
+===================================
+
+Input parms:
+
+	ldr     pointer to a LOADER structure
+
+
+Returns:
+
+	-
+
+
+Description:
+
+Before you can load any modules (with ML_LoadFN() or ML_LoadFP()) you first 
+have to register the loaders you want to use. This way only the registered 
+loaders are linked to the resulting program, so if you only wanted to support 
+a single format your program won't be so big.
+
+
+Example:
+
+	[ at the start of the main program: ]
+
+	{
+		...
+
+		ML_RegisterLoader(&modload);
+		ML_RegisterLoader(&uniload);
+
+		ML_InfoLoader();
+		...
+		...
+
+	}
+
+(if you want to keep your program as small as possible, only use the .UNI 
+loader since it is the smallest loader available (go figure!) )
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void ML_InfoLoader(void)
+========================
+
+Input parms:
+
+	-
+
+
+Returns:
+
+	-
+
+
+Description:
+
+This function produces a list of all registered loader modules to stdout. Use 
+it _after_ you've registered all loaders using ML_RegisterLoader().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+UNIMOD *ML_LoadFP(FILE *fp)
+===========================
+
+Input parms:
+
+	fp	filepointer to a music module
+
+
+Returns:
+
+	A pointer to a UNIMOD structure
+
+	or
+
+	NULL if an error occured during loading.
+
+
+Description:
+
+With this routine you can load a music-module by it's file-pointer. If it 
+returns NULL, print myerr (MMIO.C) to see what went wrong. This routine 
+doesn't close the filepointer when it's done, but you can't rely on it still 
+having the same file-position. Use ML_Free() to free the UNIMOD when you're 
+done with it.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void ML_Free(UNIMOD *mf)
+========================
+
+Input parms:
+
+	mf	pointer to a UNIMOD structure
+
+
+Returns:
+
+	-
+
+
+Description:
+
+Use this routine to free the module you loaded with ML_LoadFN() or 
+ML_LoadFP().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+UNIMOD *ML_LoadFN(char *filename)
+=================================
+
+Input parms:
+
+	filename        The filename of the module you want to load.
+
+
+Returns:
+
+	A pointer to a UNIMOD structure
+
+	or
+
+	NULL if an error occured during loading.
+
+
+Description:
+
+With this routine you can load a music-module by it's filename. If it returns 
+NULL, print myerr (MERROR.C) to see what went wrong. Use ML_Free() to free 
+the UNIMOD when you're done with it.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ

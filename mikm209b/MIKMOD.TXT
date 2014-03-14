@@ -1,0 +1,130 @@
+MikMod 2.09 Beta
+================
+
+MikMod 2.09 Beta is a beta release of the Portable MikMod Soundsystem, a
+library for playing music & soundfx on various systems & compilers.
+
+Why a beta? well I just wanted to release a preview of what I'm doing right
+now and see what kinds of reactions I get. 
+
+The most important changes are:
+
+- Portable code, compiles on DOS (Borland C, Watcom DOS4GW/pmodew) Win95 (32
+  bits, Borland 4.5) and Linux. Other makefiles are coming soon (DJGPP, OS2)
+
+- Stable XM loader/player
+
+- New software mixing, also does bidi loops & interpolation
+
+- New & simplified directory layout
+
+- New drivers: Linux voxware, Win95 sounddevice, soundblaster AWE,
+  file output driver.
+
+For the next version I plan to make new assembly mixing routines to replace
+the portable (but slow) C mixing. And for those of you who want to use mikmod
+in real-mode DOS, EMS support will return in the next release.
+
+
+Shareware or PD ?
+=================
+                  
+As of version 1.90 and higher (which some people received) MikMod is 
+SHAREWARE. Now don't format your harddisk.. This only means that you have to 
+give me a small teensy-weensy one-time $25 US registration fee if you want to 
+use MikMod COMMERCIALLY. Basically the rule is: IF YOU'RE ASKING MONEY FOR 
+THE PRODUCT YOU'RE USING MIKMOD WITH, YOU HAVE TO REGISTER. See REGISTER.FRM 
+for more details on how to register.
+
+- Registering MikMod is for binaries only. You're not allowed to distribute 
+the MikMod sources or parts of it in _any_ form. If you do want to distribute
+the sources on a commercial basis, you'll need special permission of the 
+author (Jean-Paul Mikkers).
+
+- Registering MikMod gives you the right to sell an unlimited number of 
+copies of the product you're using it for.. pretty flexible huh?
+
+- Registering MikMod 2.09B means that you're registering all versions of 
+mikmod between 2.00 and any updates until version 2.99. This allows for 
+bugfixes and updates without the need to register again.
+
+- A MikMod registration cannot be transferred from one person to another, or 
+from one person to a company, or from one company to another company.
+
+- Any contributors to MikMod (bug-fixes, new loaders, new drivers) will get 
+automatic registration for ALL MikMod versions. I'll decide if your 
+contribution is good enough for registration.
+
+- If you're a very poor shareware author and you want to use MikMod, send 
+some email with your story :). I'm always willing to negotiate a lower price, 
+or some form of alternative payment (like sample CD's, or software or Cindy 
+Crawford videos =).
+
+- Capacala members can pay the $25 US with an amount of condoms of the same 
+price (unused please, without holes =)
+
+- It's not illegal to register MikMod even when you don't use it commercially 
+=P
+
+So you see, I'm not doing this to get rich.. but it would be nice if I could 
+buy a couple of CD's from the registration money, or at least get the money I 
+spent on buying my SB16.
+
+
+Example sources
+===============
+
+This version of MikMod includes three sample sources:
+
+
+        MIKWAV: Demonstrates the use of the wav-loading capabilities of 
+                mikmod to use for soundeffects.
+                
+        MIKMOD: The modplayer.
+        
+        MIKCVT: Utility to convert your modules to the UNIMOD(tm) format.
+                           
+
+
+How to contact me
+=================
+
+Please send your questions, registration forms, comments, bugreports,
+bugfixes, loaders, drivers, soundcards etc. to:
+
+
+        Email: 
+               mikmak@via.nl (preferred)
+        
+               mikmak@stack.urc.tue.nl
+        
+        
+        Snail-mail:
+               
+               Jean-Paul Mikkers
+               Godartstr. 16
+               5932AX Tegelen,
+               The Netherlands
+
+        Phone:  
+               +31 (0)77-3732736
+
+
+Legal Stuff
+===========
+
+This software is SHAREWARE.
+
+Disclaimer:
+
+The author (Jean-Paul Mikkers) specifically disclaims all warranties,
+expressed or implied, including but not limited to implied warranties of
+merchantability and fitness for a particular purpose with respect to defects
+in the software and documentation.
+
+In no event shall the author be liable for any loss of profit or damage,
+including but not limited to special, incidental, or consequential damages.
+
+All product names, trademarks and registered trademarks contained in this
+document are the property of their respective holders.
+

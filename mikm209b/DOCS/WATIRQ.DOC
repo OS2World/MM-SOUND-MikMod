@@ -1,0 +1,107 @@
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³WATIRQ - What the F*CK?³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                         
+Date last modified: May 10, 1995
+
+Have you ever tried installing your own timer interrupt using a watcom flat 
+model program? And did it work? NO? Well this document explains why and what 
+to do about it.
+
+
+The problem
+===========
+
+In the flat memory model watcom generates code which assumes DS==SS.. it
+does this even for interrupt handler code that you might have written such
+as:
+
+        void interrupt handler(void)
+        {
+            char foo[10];
+            
+            foo[8]='a';
+
+            ...        
+        }      
+                       
+Now, being the optimizing compiler watcom is, it'll generate code to access
+foo[8] through the DS segment register, instead of SS where the array 'foo' 
+really resides. If DS would contain the same selector as SS, this wouldn't 
+be any problem! but guess what: during interrupts SS is _NOT_ DS. The result 
+of this glitch ranges from stack overflows to really nasty reboots..
+
+Maybe I am wrong in saying this is a compiler bug.. it seems that if you run 
+the same program using pmodew instead of dos4g, everything works just fine, 
+even though DS still isn't SS in most cases during interrupts (I checked). 
+Maybe pmodew allocates a new descriptor for every interrupt and maps it to 
+the same memory as DS (Daredevil?).
+
+
+The cure
+========
+
+The easiest way to fix the DS!=SS problem is to let the compiler know DS
+isn't SS so it won't try to access the stack through the data descriptor. 
+This is done by using the /zu compiler option, for every module that contains 
+code which is called from the interrupt.
+
+As with all cures, this one has some sideeffects too.. the compiler will 
+start to complain if you try to pass the address of a variable that's on the
+stack using a near ptr (the flat model default), for example:
+
+
+        void DoCalculation(int *p)
+        {
+            *p=(420/10);
+        }
+
+
+        void foo(void)
+        {
+            int retval;
+                                         
+            DoCalculation(&retval);  // <- this line will generate a warning
+        }
+
+                   
+Compiling this using the /zu flag will result in a 'pointer truncated' 
+warning, because it can't pass the 48 bit address of 'retval' using a near 32 
+bit pointer.
+
+If this kind of code isn't called from a interrupt it'll work anyway, but if 
+you want to get rid of those annoying warnings you'll have to force the 
+'retval' variable into the data segment by making it 'static':
+
+
+        void foo(void)
+        {
+           static int retval;
+           
+           DoCalculation(&retval); 
+        }                          
+                              
+        // This will compile nicely without any warnings.
+                        
+
+Ofcourse you could also move the 'retval' and make it a global variable, or
+pass a far pointer to DoCalculation (yuck!).
+
+
+Summary              
+=======
+
+Steps to take when compiling a Watcom flat model program which uses custom 
+interrupt handlers:
+
+
+1. Compile the program using the /zu switch
+
+2. Remove all 'Pointer Truncated' warnings by forcing the involved variables 
+   into the data segment (make it static or global). If you forget to do this 
+   for code that's going to be called from the interrupt -> CRASSSSH
+   
+You might notice that I don't compile the loader library using /zu, that's
+because these routines aren't called from an interrupt so it's not neccesary.
+
+

@@ -1,0 +1,403 @@
+ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+ณMDRIVER.C Module Documentationณ
+ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+Date last modified: October 20, 1995
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+General information:
+
+As far as the other modules are concerned, the driver module is a set of 
+_universal_ routines for producing sound. The other modules don't have to 
+worry about how to drive a particular soundcard, they just 'ask' the driver 
+module to reserve so many voices, to mix at a certain rate and to play a 
+voice every once in a while. The driver module will adjust the requested 
+mixing mode and frequency if the actual soundcard doesn't support it.
+
+When we take a closer look at the driver module we see that it's just a set 
+of 'glue' functions that redirect the driver function calls to the actual 
+selected soundcard driver:    
+
+
+	    ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤยฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+	    ณDRIVER BLACKBOXณ                        ณ
+	    รฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู                        ณ
+	    ณ                                        ณ
+     sb     ณฺฤฤฤฤฤฤฤฤฤฤฟ                            ณ
+   hardwareฤลดsb driver รออป <- selected driver      ณ
+	    ณภฤฤฤฤฤฤฤฤฤฤู  บ                         ณ
+	    ณ              บ                         ณ
+     gus    ณฺฤฤฤฤฤฤฤฤฤฤฟ  บ                         ณ
+   hardwareฤลดgus driverรฤฤบ                         ณ
+	    ณภฤฤฤฤฤฤฤฤฤฤู  บ ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ ณ
+	    ณ              ศอดDRIVER GLUE FUNCTIONSรฤล<>ฤ interface to
+     pas    ณฺฤฤฤฤฤฤฤฤฤฤฟ  ณ ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู ณ    other modules
+   hardwareฤลดpas driverรฤฤด                         ณ
+	    ณภฤฤฤฤฤฤฤฤฤฤู  ณ  - common driver        ณ
+	    ณ              ณ    routines             ณ
+     other  ณฺฤฤฤฤฤฤฤฤฤฤฟ  ณ                         ณ
+   hardwareฤลดetc..     รฤฤู  - common driver        ณ
+	    ณภฤฤฤฤฤฤฤฤฤฤู       variables            ณ
+	    ณ                                        ณ
+	    ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+To prevent having to link _all_ lowlevel soundcard drivers to the player 
+(when you only want to use the gus-driver), the first thing the main module 
+has to do before using the driver module is to 'register' all drivers it 
+might need. This way only the registered drivers will get linked to the 
+executable, thus reducing the size of it. So registering a driver to the 
+driver module is a way of saying 'lookee here, another driver you can choose
+from'.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+MDRIVER public variables:
+
+DRIVER *md_driver       // pointer to the currently used driver
+			// this variable is set after a call to MD_Init()
+
+UWORD  md_device        // device-number
+UWORD  md_mixfreq       // current mixing frequency
+UWORD  md_dmabufsize    // dma buffer size (for sb)
+UWORD  md_mode          // output mode
+UBYTE  md_numchn        // number of channels to use
+UBYTE  md_bpm           // current driver BPM speed
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_InfoDriver(void)
+========================
+
+Input parms:
+
+	-
+
+
+Returns:
+
+	-
+
+
+Description:
+
+This function produces a list of all registered drivers to stdout. Use it 
+_after_ you've registered all drivers using ML_RegisterDriver().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_RegisterDriver(DRIVER *drv)
+===================================
+
+Input parms:
+
+	drv     pointer to a DRIVER structure
+
+
+Returns:
+
+	-
+
+
+Description:
+
+Before you can use any of the other device-routines you first have to 
+register the drivers you want to use. This way only the registered drivers 
+are linked to the resulting program, so if you only want to support a single 
+soundcard your program won't be so big.
+
+
+Example:
+
+	[ at the start of the main program: ]
+
+	{
+		...
+
+                MD_RegisterDriver(&drv_gus);
+                MD_RegisterDriver(&drv_sb);
+
+		MD_InfoDriver();
+		...
+		...
+
+	}
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_RegisterPlayer(void (*player)(void))
+============================================
+
+Input parms:
+
+        player  pointer to a player routine which has to be called at
+                BPM rate.
+
+Returns:
+
+	-
+
+
+Description:
+
+Sets the routine that will be called by the driver to update the voices, and
+play the music. If you're using soundblaster and you have a large DMA buffer
+this playroutine will be called in bursts.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+BOOL MD_Init(void)
+==================
+
+Input parms:
+
+	-
+
+Returns:
+
+	True if soundcard init succeeded, FALSE otherwise.
+
+Description:
+
+Before calling this routine you have to initialize some variables:
+
+	md_mixfreq:     What mixing frequency do you want to use (Hz)
+
+	md_dmabufsize:  How big the soundcard dma-buffer should be (in bytes)
+
+	md_mode:        Flags what output mode to use.. Use the bitwise OR (|)
+			to combine flags:
+			
+			DMODE_16BITS : 16 bits output
+			DMODE_STEREO : stereo output
+                        DMODE_INTERP : interpolated mixing
+
+	md_device:      The number of the driver you want to use. Use 0 to
+			use the first soundcard it detects.
+
+MD_Init will call the initialisation routine of the specified driver. When 
+the soundcard doesn't support any of selected mixing modes or mixing 
+frequency it will adjust the md_mode & md_mixfreq to values that _are_ 
+supported. For example, if you have a SB-pro and you try to init it with the 
+DMODE_16BITS flag set, it removes this flag after the MD_Init() call.
+
+!!! It is ILLEGAL to change the variables md_mixfreq,md_dmabufsize, md_mode & 
+md_device AFTER you've called MD_Init()!!!
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+**** The following routines may only be called if MD_Init succeeded ****
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_Exit(void)
+==================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+De-initialises the soundcard after you're done with it.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+SWORD MD_SampleLoad(FILE *fp,ULONG size,ULONG reppos,ULONG repend,UWORD flags)
+==============================================================================
+
+Input parms:
+
+	fp      filepointer to raw sample data
+	size    size of the sample (in samples!)
+	reppos  repeat start offset
+	repend  repeat end offset
+	flags   flags which indicate the format of the sample
+
+Returns:
+
+	A handle which identifies the sample, or -1 incase of an error
+
+Description:
+
+Loads a raw sample from file to the soundcard. It returns a number (handle)
+which identifies the sample (you need the handle if you want to play the sample).
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_SampleUnLoad(SWORD handle)
+==================================
+
+Input parms:
+ 
+	handle  the handle that identifies the sample to be unloaded.
+
+Returns:
+
+	-
+
+Description:
+
+Frees the sample which was previously loaded using MP_SampleLoad().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_PlayStart(void)
+=======================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+Starts the mixing process of the soundcard (after calling this routine you 
+can use the MD_Voice* routines to make noise). Before calling this routine 
+you have to set the variable 'md_numchn' so it knows how many channels it has 
+to mix. You can call MP_Update() after this routine to do the actual updating
+of voices.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_PlayStop(void)
+======================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+Stops soundcard output. 
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_VoiceSetVolume(UBYTE voice,UBYTE vol)
+=============================================
+
+Input parms:
+
+	voice   which voice to change the volume for.
+	vol     new volume setting for this voice (0-64)
+
+Returns:
+
+	-
+
+Description:
+
+Sets the volume of a single voice. Note that it doesn't change the volume 
+immediately but at the next MD_Update() call (this is true for all MD_Voice* 
+routines).
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_VoiceSetFrequency(UBYTE voice,ULONG frq)
+================================================
+
+Input parms:
+
+	voice   which voice to change the frequency.
+	frq     new playback frequency this voice.
+
+Returns:
+
+	-
+
+Description:
+
+Sets the playback frequency of a single voice.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_VoiceSetPanning(UBYTE voice,UBYTE pan)
+==============================================
+
+Input parms:
+
+	voice   which voice to change the panning position.
+	pan     new panpos for this voice.
+
+Returns:
+
+	-
+
+Description:
+
+Changes the panning position (=balance) for this voice. 0 is all left, 255 is 
+all right.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_VoicePlay(UBYTE voice,
+                  SWORD handle,
+		  ULONG start,ULONG size,
+		  ULONG reppos,ULONG repend,
+		  UWORD flags)
+============================================
+
+Input parms:
+
+	voice   which voice to start playing a new sample on
+	handle  the handle that identifies the sample
+	start   the starting offset (in samples!)
+	size    the size of the sample (in samples!)
+	reppos  repeat start position offset.
+	repend  repeat end position offset.
+	flags   identifies the type of sample, and if it has to loop.
+
+Returns:
+
+	-
+
+Description:
+
+Starts playing a new sample on the specified channel, using the requested 
+start,size and loop parameters (using the current volume, frequency and 
+panning parameters of a voice).
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_Update()
+================
+
+Input parms:
+	-
+
+Returns:
+	-
+
+Description:
+
+Call this routine regularly to update the sound.
+NEW since 2.09: no need to call this at the exact BPM rate.. just call it
+every frame or so.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MD_SetBPM(UBYTE bpm)
+=========================
+
+Input parms:
+
+        bpm     New driver bpm rate
+
+Returns:
+	-
+
+Description:
+
+Sets the BPM rate at which the playing routine is called.
+

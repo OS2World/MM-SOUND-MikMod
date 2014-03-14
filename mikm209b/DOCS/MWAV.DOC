@@ -1,0 +1,72 @@
+ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+ณMWAV.C Module Documentationณ
+ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+Date last modified: April 05, 1995
+
+If you want to use any of the routines of this module, include "mwav.h" and 
+add MWAV.C to your project. This module also uses the MDRIVER.C module so 
+make sure you include that too.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+**** The following routines may only be called if MD_Init() succeeded ****
+		See MDRIVER.DOC for more details
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+SAMPLE *MW_LoadWavFP(FILE *fp)
+==============================
+
+Input parms:
+
+	fp      filepointer to WAV file
+
+Returns:
+
+	pointer to a SAMPLE structure if it succeeded.
+	or
+	NULL on error.
+
+Description:
+
+Load a WAV file by it's filepointer. This routine doesn't close the file when 
+it's done, and you cannot assume the fileposition is the same when it returns.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+SAMPLE *MW_LoadWavFN(char *filename)
+====================================
+
+Input parms:
+
+	fp      filepointer to WAV file
+
+Returns:
+
+	pointer to a SAMPLE structure if it succeeded.
+	or
+	NULL on error.
+
+Description:
+
+Load a WAV file by it's filename.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MW_FreeWav(SAMPLE *smp)
+============================
+
+Input parms:
+
+	smp     pointer to a SAMPLE structure
+
+Returns:
+
+	-
+
+Description:
+
+Frees a WAV which was previously loaded with MW_LoadWavFN() or MW_LoadWavFP().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ

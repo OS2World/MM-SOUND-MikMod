@@ -1,0 +1,20 @@
+CC = gcc
+CFLAGS = -g -O2 -I./include
+
+LOADERS = load_mod.o load_m15.o load_mtm.o load_s3m.o load_stm.o load_xm.o load_ult.o load_uni.o
+DRIVERS = drv_nos.o drv_vox.c
+OBJ = mikcvt.o mloader.o munitrk.o mmio.o
+OBJ2 = mikxmod.o virtch.o mloader.o mdriver.o mplayer.o munitrk.o mmio.o
+
+all:	mikmod mikcvt
+
+mikmod: $(OBJ2) $(LOADERS) $(DRIVERS)
+	$(CC) $(CFLAGS) $(OBJ2) $(LOADERS) $(DRIVERS) -o $@
+	strip $@
+
+mikcvt: $(OBJ) $(LOADERS)
+	$(CC) $(CFLAGS) $(OBJ) $(LOADERS) -o $@
+	strip $@
+
+clean:
+	rm -f $(OBJ)

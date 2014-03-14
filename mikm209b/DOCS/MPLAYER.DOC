@@ -1,0 +1,133 @@
+ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ
+ณMPLAYER.C Module Documentationณ
+ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู
+
+Date last modified: October 20, 1995
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+MPLAYER public variables:
+
+// read only (not really, but it's not wise to change 'em):
+
+AUDTMP mp_audio[32];	// the 32 temporary channels
+UBYTE  mp_bpm;		// beats-per-minute speed
+UWORD  mp_patpos;	// current row number
+int    mp_sngpos;	// current song position
+UWORD  mp_sngspd;	// current songspeed
+
+// read/write variables:
+
+BOOL  mp_loop   	// enable/disable looping
+BOOL  mp_panning	// enable/disable panning
+BOOL  mp_extspd		// enable/disable extended (bpm) speed 
+UBYTE mp_volume         // song volume (0-100)
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MP_Init(UNIMOD *m)
+=======================
+
+Input parms:
+
+	m       Pointer to a UNIMOD module (which was loaded with MLOADER.C)
+
+
+Returns:
+
+	-
+
+Description:
+
+Initializes the module player to start playing this module the next time 
+MP_HandleTick() is called.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MP_HandleTick(void)
+=======================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+You have to call this routine at the current BPM rate (mp_bpm) to play the 
+song you initialized with MP_Init().
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+BOOL MP_Ready(void)
+===================
+
+Input parms:
+
+	-
+
+Returns:
+
+	True if the song is finished, FALSE if not.
+
+Description:
+
+Use this routine to check if a module is done playing. This is only useful if 
+you set the variable mp_loop to 0, so a song won't restart when it's done.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MP_PrevPosition(void)
+==========================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+skips a song to the previous pattern.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MP_NextPosition(void)
+==========================
+
+Input parms:
+
+	-
+
+Returns:
+
+	-
+
+Description:
+
+skips a song to the next pattern.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+void MP_SetPosition(UWORD pos)
+==============================
+
+Input parms:
+
+        pos     Song position to jump to
+
+
+Returns:
+
+	-
+
+Description:
+
+skips a song to the specified position.
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ

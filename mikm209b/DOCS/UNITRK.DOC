@@ -1,0 +1,29 @@
+The UNITRK(tm) Format:
+======================
+
+A UNITRK stream is an array of bytes representing a single track of a
+pattern. It's made up of 'repeat/length' bytes, opcodes and operands (sort
+of a assembly language):
+
+rrrlllll
+[REP/LEN][OPCODE][OPERAND][OPCODE][OPERAND] [REP/LEN][OPCODE][OPERAND]..
+^                                         ^ ^
+|-------ROWS 0 - 0+REP of a track---------| |-ROWS xx - xx+REP of a track..
+
+
+The len field (lower 5 bits) of the rep/len byte contains the number of
+bytes in the current row, _including_ the rep/len byte itself (So the len
+field of row in the previous example would have a value of 5). This makes
+it easy to search through a stream for a particular row. A track is conclu-
+ded by a 0-value rep/len byte.
+
+The upper 3 bits of the rep/len byte contain the number of times -1 this
+row is repeated for this track (so a value of 7 means this row is repeated
+8 times).
+
+Opcodes can range from 1 to 255 but currently only opcodes 1 to 19 are
+being used. Each opcode can have a different number of operands. You can
+find the number of operands to a particular opcode by using the opcode as
+an index into the 'unioperands' table (UNITRK.C) . The opcodes itself are
+defined in 'UNITRK.H'.
+

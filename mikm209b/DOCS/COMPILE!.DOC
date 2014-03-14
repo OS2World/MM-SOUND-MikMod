@@ -1,0 +1,17 @@
+MikMod 2.09 Beta compilation notes
+==================================
+
+With this portable version of mikmod I moved all makefiles for every
+system/compiler to seperate directories (in MIKM209B\SOURCE):
+
+BORLAND : project files to compile mikmod for DOS real mode, using BC 3.1
+WIN95   : driver + IDE files to compile mikmod for Windows'95, using BC 4.5
+LINUX   : sources + makefile to compile mikmod for Linux, using GNU-C
+WATCOM  : makefile to compile mikmod for DOS protected mode, using Watcom C
+
+To compile mikmod to one of those targets, just copy the files in that
+specific directory one directory below (to the SOURCE directory).
+
+Then, go to the source directory (if you weren't already) and run MAKE,
+WMAKE, BC, or whatever is appropriate.
+
